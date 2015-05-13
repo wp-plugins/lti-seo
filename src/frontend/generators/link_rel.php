@@ -46,7 +46,18 @@ class NotFound_Link_Rel extends Frontpage_Link_Rel {
 }
 
 class Page_Link_Rel extends Frontpage_Link_Rel {
+	public function make_tags() {
 
+		$tags            = array();
+		$publisher = $this->helper->get( 'link_rel_publisher' );
+		if ( ! is_null( $publisher ) ) {
+			$tags['publisher'] = esc_url($this->helper->get( 'gplus_publisher' ));
+		}
+
+		$tags = apply_filters( 'lti_seo_link_rel', $tags );
+
+		return $tags;
+	}
 }
 
 class Author_Link_Rel extends Link_Rel {

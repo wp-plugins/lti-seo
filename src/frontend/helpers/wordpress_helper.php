@@ -259,6 +259,7 @@ class Wordpress_Helper extends Generic_Helper implements ICanHelp, ICanHelpWithJ
 					$this->page_type = 'Attachment';
 				} elseif ( is_page() ) {
 					$this->page_type = 'Page';
+					$this->post_id   = $this->get_post_info( 'ID' );
 				} else {
 					$this->page_type = 'Singular';
 					$this->post_id   = $this->get_post_info( 'ID' );
@@ -444,7 +445,9 @@ class Wordpress_Helper extends Generic_Helper implements ICanHelp, ICanHelpWithJ
 				$img = $this->get_attached_post_images( $nb_img );
 			}
 			if ( ! empty( $img ) ) {
-				$data = array_merge( $data, $img );
+				foreach ( $img as $key => $image ) {
+					$data[ $key ] = $image;
+				}
 			}
 		}
 
@@ -639,8 +642,9 @@ class Wordpress_Helper extends Generic_Helper implements ICanHelp, ICanHelpWithJ
 					$this->page_description = get_bloginfo( 'description' );
 				}
 			} else {
-				if ( $this->settings->get( 'description_support' ) == true ) {
-					$this->page_description = $this->get_post_meta_key( 'description' );
+				$this->page_description = $this->get_post_meta_key( 'description' );
+				if ( $this->settings->get( 'description_support' ) == false || empty( $this->page_description ) ) {
+					$this->page_description = get_bloginfo( 'description' );
 				}
 			}
 		}
