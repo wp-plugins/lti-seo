@@ -1,0 +1,43 @@
+[
+    {
+        "name": "lti/json-ld",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/DeCarvalhoBruno/json-ld.git",
+            "reference": "ba28691500447936432e375c6a8503496afd3c9b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/DeCarvalhoBruno/json-ld/zipball/ba28691500447936432e375c6a8503496afd3c9b",
+            "reference": "ba28691500447936432e375c6a8503496afd3c9b",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3"
+        },
+        "time": "2015-05-03 09:35:15",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Lti\\Seo\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "authors": [
+            {
+                "name": "Bruno De Carvalho",
+                "email": "decarvalho.bruno@free.fr",
+                "role": "Developer"
+            }
+        ],
+        "description": "JSON-LD markup generator",
+        "homepage": "http://forum.linguisticteam.org",
+        "keywords": [
+            "JSON-LD",
+            "linguistic team international"
+        ]
+    }
+]
