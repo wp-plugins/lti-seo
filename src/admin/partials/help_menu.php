@@ -35,6 +35,10 @@ class Lti_Seo_Help_Menu {
 		       '<p>' . ltint( 'general_hlp_social_2' ) . '</p>'.
 		       '<p>' . ltint( 'general_hlp_social_3' ) . '</p>';
 	}
+	public function google_tab() {
+		return '<p>' . ltint( 'general_hlp_google_1' ) . '</p>'.
+		       '<p>' . ltint( 'general_hlp_google_2' ) . '</p>';
+	}
 
 	public function sidebar() {
 		return '<p><strong>' . ltint( 'general_hlp_about_us' ) . '</strong></p>' .

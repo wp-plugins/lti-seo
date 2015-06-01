@@ -7,4 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Lti\\Seo\\' => array($vendorDir . '/lti/json-ld/src'),
+    'Lti\\Google\\' => array($vendorDir . '/lti/google/src/Lti'),
+    'Lti\\' => array($baseDir . '/src'),
 );

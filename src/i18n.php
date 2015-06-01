@@ -1,13 +1,5 @@
 <?php namespace Lti\Seo;
 
-	/**
-	 * Define the internationalization functionality
-	 *
-	 * Loads and defines the internationalization files for this plugin
-	 * so that it is ready for translation.
-	 *
-	 */
-
 /**
  * Define the internationalization functionality.
  *

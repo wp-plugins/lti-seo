@@ -1,9 +1,9 @@
 === LTI SEO ===
-Contributors: decarvalho_bruno
+Contributors: lti, decarvalho_bruno
 Tags: open-source, SEO, meta, google, twitter, facebook, pinterest, social media, webmaster, search engine optimization, moteur, recherche, json-ld, rich snippets, meta tags, optimisation, schema.org, open graph, réseaux, sociaux, robots
 Requires at least: 4
 Tested up to: 4.2.2
-Stable tag: 0.5.0
+Stable tag: 0.6.0
 License: GNU General Public License, version 2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NHYSUNN8G6M52
@@ -55,6 +55,10 @@ The following information can be added, if the corresponding option is activated
  - Type *website* on the frontpage
  - Type *article* on posts, with attached or featured images, if any.
 
+= Taking advantage of the Google Search Console =
+
+LTI SEO wants to make sure Wordpress users know about the Search console by facilitating the process of adding and verifying sites directly from Wordpress. Without these types of tools, it would be hard to assess whether our SEO efforts are worth putting time and effort into!
+
 = Contribution =
 
 You can help us by:
@@ -82,7 +86,8 @@ Clicking on the **"Deactivate"** button will disable the user profile fields and
 2. Admin options, Front page tab
 3. Admin options, Posts and pages tab
 4. Admin options, Social tab
-5. Meta box in the post editing page.
+5. Admin options, Google tab
+6. Meta box in the post editing page.
 
 == Frequently Asked Questions ==
 
@@ -107,6 +112,10 @@ Also, search engines that find relevant content on your sites are more likely to
 
 - 0.5.0
   - First Version
+- 0.6.0
+  - Hardened the code a little (no direct access to POST and GET variables)
+  - Added Google Search console support to add and verify sites
+  - Changed the way LTI plugins appear in the admin menu
 
 == Upgrade Notice ==
 

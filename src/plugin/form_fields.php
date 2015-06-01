@@ -23,7 +23,13 @@ abstract class Fields {
 class Field_Checkbox extends Fields {
 	public function __construct( $value, $default = false, $isTracked = false ) {
 		$this->isTracked = $isTracked;
-		$this->value     = ( $value === true || (int) $value === 1 || $value === "true" || $value === 'on' ) ? true : $default;
+		if ( $value === true || (int) $value === 1 || $value === "true" || $value === 'on' ) {
+			$this->value = true;
+		} else if ( $value === false ) {
+			$this->value = false;
+		} else {
+			$this->value = $default;
+		}
 	}
 }
 
@@ -59,6 +65,18 @@ class Field_Url extends Fields {
 	public function __construct( $value, $default = "", $isTracked = false ) {
 		$this->isTracked = $isTracked;
 		if ( $value && ! filter_var( $value, FILTER_VALIDATE_URL ) === false ) {
+			$this->value = $value;
+		} else {
+			$this->value = $default;
+		}
+	}
+
+}
+
+class Field_Html extends Fields {
+	public function __construct( $value, $default = "", $isTracked = false ) {
+		$this->isTracked = $isTracked;
+		if ( $value) {
 			$this->value = $value;
 		} else {
 			$this->value = $default;

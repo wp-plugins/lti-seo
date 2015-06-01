@@ -6,18 +6,18 @@
         "source": {
             "type": "git",
             "url": "https://github.com/DeCarvalhoBruno/json-ld.git",
-            "reference": "ba28691500447936432e375c6a8503496afd3c9b"
+            "reference": "354fd518aff5fa52635f435888056fe0bd926566"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/DeCarvalhoBruno/json-ld/zipball/ba28691500447936432e375c6a8503496afd3c9b",
-            "reference": "ba28691500447936432e375c6a8503496afd3c9b",
+            "url": "https://api.github.com/repos/DeCarvalhoBruno/json-ld/zipball/354fd518aff5fa52635f435888056fe0bd926566",
+            "reference": "354fd518aff5fa52635f435888056fe0bd926566",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3"
         },
-        "time": "2015-05-03 09:35:15",
+        "time": "2015-05-21 18:59:58",
         "type": "library",
         "installation-source": "source",
         "autoload": {
@@ -38,6 +38,53 @@
         "keywords": [
             "JSON-LD",
             "linguistic team international"
+        ]
+    },
+    {
+        "name": "lti/google",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/DeCarvalhoBruno/lti-wp-google.git",
+            "reference": "3a013cdf307df61018da96a075217194004311c6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/DeCarvalhoBruno/lti-wp-google/zipball/3a013cdf307df61018da96a075217194004311c6",
+            "reference": "3a013cdf307df61018da96a075217194004311c6",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.1"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "3.7.*"
+        },
+        "time": "2015-05-27 20:08:25",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.1.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ],
+            "psr-4": {
+                "Lti\\Google\\": "src/Lti"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "description": "Client library for Google APIs",
+        "homepage": "http://developers.google.com/api-client-library/php",
+        "keywords": [
+            "google"
         ]
     }
 ]

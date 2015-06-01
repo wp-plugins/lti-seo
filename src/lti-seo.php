@@ -1,6 +1,6 @@
 <?php namespace Lti\Seo;
 
-use Lti\Seo\Helpers\Wordpress_Helper;
+use Lti\Seo\Helpers\LTI_SEO_Helper;
 use Lti\Seo\Plugin\Plugin_Settings;
 
 /**
@@ -25,7 +25,7 @@ class LTI_SEO {
 	/**
 	 * The unique identifier of this plugin.
 	 *
-	 * @var      string $plugin_name The string used to uniquely identify this plugin.
+	 * @var      string The string used to uniquely identify this plugin.
 	 */
 	protected $LTI_SEO;
 
@@ -52,6 +52,11 @@ class LTI_SEO {
 	public $admin;
 	public $frontend;
 	private $helper;
+	/**
+	 * @var \Lti\Seo\User
+	 */
+	private $user;
+	public static $is_plugin_page = false;
 
 	/**
 	 * Define the core functionality of the plugin.
@@ -62,12 +67,10 @@ class LTI_SEO {
 	 *
 	 */
 	public function __construct() {
-		$this->file_path = plugin_dir_path( __FILE__ );
-		require_once $this->file_path . 'plugin/form_fields.php';
-		require_once $this->file_path . 'plugin/plugin.php';
+		$this->file_path   = plugin_dir_path( __FILE__ );
 		$this->name        = LTI_SEO_NAME;
 		$this->plugin_path = LTI_SEO_PLUGIN_DIR;
-		$this->basename = LTI_SEO_PLUGIN_BASENAME;
+		$this->basename    = LTI_SEO_PLUGIN_BASENAME;
 		$this->settings    = get_option( "lti_seo_options" );
 
 		if ( $this->settings === false || empty( $this->settings ) ) {
@@ -76,6 +79,7 @@ class LTI_SEO {
 
 		$this->load_dependencies();
 		$this->set_locale();
+		static::$is_plugin_page = ( filter_input( INPUT_GET, 'page' ) == 'lti-seo-options' );
 	}
 
 	public static function get_instance() {
@@ -96,32 +100,17 @@ class LTI_SEO {
 
 
 	private function load_dependencies() {
-		require_once $this->plugin_path . 'vendor/autoload.php';
 		require_once $this->file_path . 'helper.php';
-		require_once $this->file_path . 'loader.php';
-		require_once $this->file_path . 'i18n.php';
-		require_once $this->file_path . 'admin/admin.php';
-		require_once $this->file_path . 'frontend/frontend.php';
 		require_once $this->file_path . 'plugin/postbox.php';
-		require_once $this->file_path . 'frontend/helpers/wordpress_helper.php';
-		require_once $this->file_path . 'frontend/generators/schema_org.php';
-		require_once $this->file_path . 'frontend/generators/json_ld.php';
-		require_once $this->file_path . 'frontend/generators/generic_meta_tag.php';
-		require_once $this->file_path . 'frontend/generators/open_graph.php';
-		require_once $this->file_path . 'frontend/generators/twitter_cards.php';
-		require_once $this->file_path . 'frontend/generators/keywords.php';
-		require_once $this->file_path . 'frontend/generators/description.php';
-		require_once $this->file_path . 'frontend/generators/robots.php';
-		require_once $this->file_path . 'frontend/generators/link_rel.php';
-		require_once $this->file_path . 'activator.php';
+
 		$this->loader = new Loader();
-		$this->helper = new Wordpress_Helper( $this->settings );
+		$this->helper = new LTI_SEO_Helper( $this->settings );
 	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the lti-seo_i18n class in order to set the domain and to register the hook
+	 * Uses the i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @access   private
@@ -144,20 +133,30 @@ class LTI_SEO {
 		$this->admin = new Admin( $this->name, $this->basename, $this->version, $this->settings, $this->plugin_path,
 			$this->helper );
 
-		$this->loader->add_action( 'admin_init', $this->admin, 'register_setting' );
+		$this->loader->add_action( 'admin_init', $this, 'activate' );
 		$this->loader->add_filter( 'plugin_row_meta', $this->admin, 'plugin_row_meta', 10, 2 );
-		$this->loader->add_action( 'admin_enqueue_scripts', $this->admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $this->admin, 'enqueue_scripts' );
+
 		$this->loader->add_action( 'admin_menu', $this->admin, 'admin_menu' );
 		$this->loader->add_filter( 'plugin_action_links', $this->admin, 'plugin_actions', 10, 2 );
 		$this->loader->add_action( 'add_meta_boxes', $this->admin, 'add_meta_boxes' );
 		$this->loader->add_action( 'save_post', $this->admin, 'save_post', 10, 3 );
 
 		if ( apply_filters( 'lti_seo_allow_profile_social_settings', true ) ) {
-			$this->loader->add_action( 'show_user_profile', $this->admin, 'show_user_profile' );
-			$this->loader->add_action( 'edit_user_profile', $this->admin, 'show_user_profile' );
-			$this->loader->add_action( 'personal_options_update', $this->admin, 'personal_options_update', 10, 1 );
-			$this->loader->add_action( 'edit_user_profile_update', $this->admin, 'personal_options_update', 10, 1 );
+			$this->user = new User( $this->settings, $this->helper );
+			$this->loader->add_action( 'show_user_profile', $this->user, 'show_user_profile' );
+			$this->loader->add_action( 'edit_user_profile', $this->user, 'show_user_profile' );
+			$this->loader->add_action( 'personal_options_update', $this->user, 'personal_options_update', 10, 1 );
+			$this->loader->add_action( 'edit_user_profile_update', $this->user, 'personal_options_update', 10, 1 );
+		}
+
+		if ( ( isset( $GLOBALS['pagenow'] ) && ( $GLOBALS['pagenow'] === 'post.php' || $GLOBALS['pagenow'] === 'post-new.php' ) ) || LTI_SEO::$is_plugin_page ) {
+			$this->loader->add_action( 'admin_enqueue_scripts', $this->admin, 'enqueue_styles' );
+			$this->loader->add_action( 'admin_enqueue_scripts', $this->admin, 'enqueue_scripts' );
+		}
+
+		if ( LTI_Seo::$is_plugin_page ) {
+			$this->loader->add_filter( 'admin_footer_text', $this, 'admin_footer_text' );
+			$this->loader->add_filter( 'update_footer', $this, 'update_footer', 15 );
 		}
 	}
 
@@ -179,11 +178,29 @@ class LTI_SEO {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-
 		$this->frontend = new Frontend( $this->name, $this->version, $this->settings,
 			$this->helper );
 
 		$this->loader->add_action( 'wp_head', $this->frontend, 'head' );
+	}
+
+	public function admin_footer_text( $text ) {
+		if ( ! static::$is_plugin_page ) {
+			return $text;
+		}
+
+		return sprintf( '<em>%s <a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/%s#postform">%s</a></em>',
+			ltint( 'admin.footer.feedback' ), LTI_SEO_NAME, ltint( 'admin.footer.review' ) );
+	}
+
+	public function update_footer( $text ) {
+		if ( ! static::$is_plugin_page ) {
+			return $text;
+		}
+
+		return sprintf( '<a target="_blank" title="%s" href="https://wordpress.org/plugins/%s/changelog/">%s %s</a>, %s',
+			ltint( 'general.changelog' ), LTI_SEO_NAME, ltint( 'general.version' ), LTI_SEO_VERSION, $text );
+
 	}
 
 	/**
@@ -225,14 +242,10 @@ class LTI_SEO {
 	}
 
 	public static function activate() {
-		require_once LTI_SEO_MAIN_CLASS_DIR . 'activator.php';
 		Activator::activate();
 	}
 
 	public static function deactivate() {
-		require_once LTI_SEO_MAIN_CLASS_DIR . 'deactivator.php';
 		Deactivator::deactivate();
 	}
-
-
 }
